@@ -1,0 +1,8 @@
+#ifndef SOS_H
+#define SOS_H
+ 
+extern int sos_alert;
+extern int is_Active_Passenger;
+ 
+void trigger_sos_alert();
+#endif
