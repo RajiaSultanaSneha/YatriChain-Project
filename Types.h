@@ -3,123 +3,61 @@
 
 #include "config.h"
 
-/*==============================
-        User Types
-===============================*/
-
-typedef enum
-{
-    PASSENGER = 1,
-    VEHICLE_OWNER,
-    COMPANY,
-    ADMIN
-
-} UserType;
-
-/*==============================
-        Vehicle Types
-===============================*/
-
-typedef enum
-{
-    BIKE = 1,
-    CAR,
-    MICROBUS,
-    CNG,
-    PICKUP,
-    VAN,
-    TRUCK,
-    BUS
-
-} VehicleType;
-
-/*==============================
-        Booking Status
-===============================*/
-
-typedef enum
-{
-    PENDING = 1,
-    ACCEPTED,
-    COMPLETED,
-    CANCELLED
-
-} BookingStatus;
-
-/*==============================
-        Payment Status
-===============================*/
-
-typedef enum
-{
-    UNPAID = 1,
-    PAID,
-    REFUNDED
-
-} PaymentStatus;
-
-/*==============================
-        User Structure
-===============================*/
-
-typedef struct
-{
-    int userID;
-    UserType type;
+/*==========================
+      User Dynamic Structure
+==========================*/
+typedef struct {
     char name[MAX_NAME_LENGTH];
-    char phone[MAX_PHONE_LENGTH];
-    char email[MAX_EMAIL_LENGTH];
+    char nid[20];
+    char phone[MAX_PHONE_LENGTH + 1];
     char password[MAX_PASSWORD_LENGTH];
-    char address[MAX_ADDRESS_LENGTH];
-    double walletBalance;
-
+    int role; // 1: Passenger, 2: Vehicle Owner, 3: Admin
 } User;
 
-/*==============================
-        Vehicle Structure
-===============================*/
-
-typedef struct
-{
-    int vehicleID;
-    int ownerID;
-    VehicleType type;
-    char model[MAX_MODEL_LENGTH];
-    char plateNumber[MAX_PLATE_LENGTH];
-    double rentPerKM;
-    bool available;
-
+/*==========================
+    Vehicle Dynamic Structure
+==========================*/
+typedef struct {
+    int id;
+    char name[MAX_MODEL_LENGTH];
+    char type[20];                       // Bus, Taxi, Uber
+    char route[MAX_ROUTE_LENGTH];        // Route details
+    int total_seats;                     // Bus seat capacity / Taxi capacity
+    int available_seats[3];              // Seats for 3 Shifts (Bus)
+    double price_per_ticket;             // Ticket price OR Rate per KM
+    char seats_info[50];
+    double total_rating;
+    int rating_count;
+    
+    /* Security, Discount & Validity Fields */
+    char plate_no[MAX_PLATE_LENGTH];     // Vehicle Number Plate
+    char promo_code[20];                 // Custom Promo Code
+    double discount_percent;             // Discount percentage
+    char validity_date[20];              // Expiry Date (YYYY-MM-DD)
 } Vehicle;
 
-/*==============================
-        Company Structure
-===============================*/
-
-typedef struct
-{
-    int companyID;
-    char companyName[MAX_NAME_LENGTH];
-    char email[MAX_EMAIL_LENGTH];
-    char password[MAX_PASSWORD_LENGTH];
-
-} Company;
-
-/*==============================
-        Booking Structure
-===============================*/
-
-typedef struct
-{
-    int bookingID;
-    int passengerID;
-    int vehicleID;
-    char pickup[MAX_ADDRESS_LENGTH];
-    char destination[MAX_ADDRESS_LENGTH];
-    double distance;
-    double fare;
-    BookingStatus bookingStatus;
-    PaymentStatus paymentStatus;
-
+/*==========================
+    Booking Dynamic Structure
+==========================*/
+typedef struct {
+    char ticket_id[20];
+    char user_name[MAX_NAME_LENGTH];
+    char phone[MAX_PHONE_LENGTH + 1];
+    int vehicle_id;
+    char seat_number[20];                // Seat no or Service type
+    int shift_choice;
+    int tickets_booked;                  // Seats or Vehicles count
+    double distance_km;                  // Distance for Taxi/Uber
+    char pickup_location[MAX_ADDRESS_LENGTH];
+    char drop_location[MAX_ADDRESS_LENGTH];
+    double original_fare;
+    double final_fare;
+    double total_cost;
+    int otp;
+    char payment_method[20];             // bKash, Nagad, Cash
+    char wallet_number[20];
+    char status[20];                     // Booked, Cancelled
+    int sos_alert;
 } Booking;
 
 #endif
