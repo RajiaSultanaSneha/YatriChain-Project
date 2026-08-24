@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX_VEHICLES 100
+#define DATA_FILE "vehicles.txt"
+
+struct Vehicle {
+char name[50];
+float rating;
+};
+
+struct Vehicle vehicles[MAX_VEHICLES];
+int count = 0;
+
+void loadVehicles() {
+    FILE *fp = fopen(DATA_FILE, "r");
+    if (fp == NULL) return;
+
+    while (count < MAX_VEHICLES && fscanf(fp, "%49[^,],%f\n", vehicles[count].name, &vehicles[count].rating) == 2) {
+        count++;
+    }
+    fclose(fp);
+    }
+
+void saveVehicles() {
+    FILE *fp = fopen(DATA_FILE, "w");
+    for (int i = 0; i < count; i++) {
+        fprintf(fp, "%s,%.2f\n", vehicles[i].name, vehicles[i].rating);
+    }
+    fclose(fp);
+    printf("Saved. Goodbye!\n");
+    }
+
+void displayVehicles() {
+    if (count == 0) {
+     printf("No vehicles yet.\n");
+    return;
+    }
+
+    printf("\n%-20s %s\n", "Name", "Rating");
+    for (int i = 0; i < count; i++) {
+    printf("%-20s %.2f\n", vehicles[i].name, vehicles[i].rating);
+    }
+  }
+
+void addOrUpdateRating() {
+    char name[50];
+    float rating;
+    int found = 0;
+
+    printf("Vehicle name: ");
+    scanf(" %[^\n]", name);
+    printf("Rating (0-5): ");
+    scanf("%f", &rating);
+ for (int i = 0; i < count; i++) {
+        if (strcmp(vehicles[i].name, name) == 0) {
+            vehicles[i].rating = rating;
+            found = 1;
+            break;
+ }
+ }
+
+    if (found) {
+        printf("Updated %s.\n", name);
+    } else {
+       strcpy(vehicles[count].name, name);
+        vehicles[count].rating = rating;
+        count++;
+        printf("Added %s.\n", name);
+     
+}
+}
+
+void rankVehicles() {
+    struct Vehicle temp;
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+        if (vehicles[j].rating < vehicles[j + 1].rating) {
+        temp = vehicles[j];
+        vehicles[j] = vehicles[j + 1];
+        vehicles[j + 1] = temp;
+}
+}
+}
+}
+
+int main() {
+    int choice;
+    loadVehicles();
+
+    do {
+        printf("\n===== Vehicle Rating Menu =====\n");
+        printf("1. Display Vehicles\n");
+        printf("2. Add/Update Vehicle Rating\n");
+        printf("3. Rank by Rating\n");
+        printf("4. Save & Exit\n");
+        printf("Choice: ");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            displayVehicles();
+        } else if (choice == 2) {
+            addOrUpdateRating();
+        } else if (choice == 3) {
+            rankVehicles();
+            displayVehicles();
+        } else if (choice == 4) {
+            saveVehicles();
+        } else {
+            printf("Invalid choice.\n");
+        }
+
+    } while (choice != 4);
+
+    return 0;
+}
